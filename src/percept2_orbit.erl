@@ -2,7 +2,7 @@
 
 -compile(export_all).
 
--define(cmd, "erl ").
+-define(cmd, filename:join([code:root_dir(), "bin","erl"])).
  
 %%command to run the the sd-orbit benchmark and trace message sending.
 run_orbit_with_trace(N) ->
@@ -18,8 +18,12 @@ analyze_orbit_data(N) ->
     percept2:analyze(Files).
 
 start_nodes(N) ->
-    [os:cmd(?cmd++" -name node"++integer_to_list(I)++"@127.0.0.1"++
-                " -setcookie \"secret\" -detached -pa ebin")
+    [begin
+         Cmd = ?cmd++"  -name node"++integer_to_list(I)++"@127.0.0.1"++
+                " -setcookie \"secret\" -detached -pa ebin",
+         io:format("starting node:\n~p\n",[Cmd]),
+         os:cmd(Cmd)
+     end
      ||I<-lists:seq(1, N)].
 
 teardown(N) -> 
@@ -56,3 +60,7 @@ teardown(N) ->
 %% 2)goto page localhost:8080.
 %% 3)goto the 'processes' page to see the send/receive data.
 
+
+
+percept2:profile("sim_code.dat", {sim_code,sim_code_detection, 
+                      [["../test"], 3, 40, 2, 4, 0.8, [], 8]},  [all, {callgraph, [sim_code]}]).
