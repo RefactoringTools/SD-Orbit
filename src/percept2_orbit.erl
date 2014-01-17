@@ -2,7 +2,7 @@
 
 -compile(export_all).
 
--define(cmd, "c:/erl5.9.1/bin/erl ").
+-define(cmd, "erl ").
  
 %%command to run the the sd-orbit benchmark and trace message sending.
 run_orbit_with_trace(N) ->
