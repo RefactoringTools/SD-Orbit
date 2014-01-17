@@ -1,0 +1,60 @@
+
+
+=== SD-orbit ========
+
+
+step1
+
+install:
+
+git git@github.com:RefactoringTools/SD-Orbit.git
+
+cd SD-Orbit
+
+
+Open ./start.sh, and change 'erl' is needed.
+Open ./src/percept2_orbit.erl, change the value of the ?cmd macro is need.
+
+
+./compile
+
+
+step2:
+
+
+run SD-orbit with 15 nodes (3 s_groups).
+
+cd SD-Orbit
+
+./start.sh
+
+percept2_orbit:run_orbit_with_trace(15).
+
+
+percept2_orbit:analyze_orbit_data(15).
+
+
+step3:
+
+In the erl shell:
+
+cd  the directory containing the trace data.
+
+run:
+
+ percept2_multi_node_trace:analyze_orbit_data(N).
+
+
+Step 4:
+
+To see the profiling data:
+
+1)in the Erlang shell, run the command:  percept2:start_webserver(8080).
+
+2)goto page localhost:8080.
+
+3)goto the 'processes' page to see the send/receive data.
+
+4)goto inter-node communication to see the communication graph.
+
+
