@@ -1,39 +1,35 @@
 -module(percept2_orbit). 
 
 -compile(export_all).
+
+-define(cmd, "c:/erl5.9.1/bin/erl ").
  
 %%command to run the the sd-orbit benchmark and trace message sending.
 run_orbit_with_trace(N) ->
     Nodes=[list_to_atom("node"++integer_to_list(I)++"@127.0.0.1")
            ||I<-lists:seq(1,N)],
-    percept2_dist:start(Nodes, {init_bench, main, [Nodes]}, new, [procs,send], []).  
+    start_nodes(N),
+    percept2_dist:start(Nodes, {init_bench, main, [Nodes]}, new, [procs,send], []),
+    teardown(N).
+  
 analyze_orbit_data(N) ->
     Files=[list_to_atom("node"++integer_to_list(I)++"@127.0.0.1-ttb")
            ||I<-lists:seq(1,N)],
     percept2:analyze(Files).
 
-run(N) ->
-    Nodes=[list_to_atom("node"++integer_to_list(I)++"@127.0.0.1")
-           ||I<-lists:seq(1,N)],
-    %% Res=rpc:call('node1@127.0.0.1', percept2, profile, ["sub_master.dat", [all, {callgraph, [worker, master, sub_master]}]]),
-    %% io:format("Res:~p\n", [Res]),
-    init_bench:main(Nodes).
-    %% rpc:call('node1@127.0.0.1', percept2, stop_profile, []).
+start_nodes(N) ->
+    [os:cmd(?cmd++" -name node"++integer_to_list(I)++"@127.0.0.1"++
+                " -setcookie \"secret\" -detached -pa ebin")
+     ||I<-lists:seq(1, N)].
 
+teardown(N) -> 
+    F=fun(I) ->
+              Node=list_to_atom("node"++integer_to_list(I)++"@127.0.0.1"),
+              rpc:call(Node, erlang, halt, [])
+      end,
+    lists:foreach(fun(I) -> F(I) end, lists:seq(1, N)).
 
-%% percept2:profile("worker.dat", [all, {callgraph, [sub_master, worker]}]).
-
-run1(N) ->
-    Nodes=[list_to_atom("node"++integer_to_list(I)++"@127.0.0.1")
-           ||I<-lists:seq(1,N)],
-    Res=rpc:call('node2@127.0.0.1', 
-             percept2, profile, 
-              ["worker.dat", [all, {callgraph, [sub_master]}]]),
-    io:format("Res:~p\n", [Res]),
-    init_bench:main(Nodes),
-    rpc:call('node2@127.0.0.1', percept2, stop_profile, []).
-
-
+    
 %% percept2_orbit:percept2_orbit:run_orbit_with_trace(15).
 %% percept2_orbit:analyze_orbit_data(15).
 
