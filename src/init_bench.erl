@@ -11,7 +11,7 @@
 
 main() ->
     G=fun bench:g12345/1, 
-    N= 100000, %% 100000%% calculates Orbit for 0..N
+    N= 10000, %% 100000%% calculates Orbit for 0..N
     P= 40, %% Naumber of worker processes on each node
     G_size=5, %% Number of nodes in each s_group
     Nodes=config:get_key(nodes), %% Loads list of node names from config file
