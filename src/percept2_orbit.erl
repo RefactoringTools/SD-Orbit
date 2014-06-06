@@ -60,7 +60,3 @@ teardown(N) ->
 %% 2)goto page localhost:8080.
 %% 3)goto the 'processes' page to see the send/receive data.
 
-
-
-percept2:profile("sim_code.dat", {sim_code,sim_code_detection, 
-                      [["../test"], 3, 40, 2, 4, 0.8, [], 8]},  [all, {callgraph, [sim_code]}]).
