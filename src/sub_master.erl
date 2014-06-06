@@ -141,14 +141,12 @@ do_collect_orbit(N, PartOrbits, WorkerStats) ->
 
 %% this is gateway process which is created on all sub-master nodes
 gateway() ->
-    %% io:format("Register sd_orbit:~p\n", [{self(), node()}]),
-    Res=register(sd_orbit, self()),
-   %% io:format("whereis sd_orbit:~p\n", [{Res, whereis(sd_orbit)}]),
-  process_flag(priority, high), %% set priority of gateway process to high
-  receive 
+    _Res=register(sd_orbit, self()),
+    process_flag(priority, high), %% set priority of gateway process to high
+    receive 
 	{start, Group_Hash_Table} -> %% Receives the group hash table from Master node
-		gateway(Group_Hash_Table)
-  end.
+            gateway(Group_Hash_Table)
+    end.
 
 %% gateway process receives the first level hash table in which range is divided among groups
 gateway(Group_Hash_Table) ->
